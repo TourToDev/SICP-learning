@@ -1,0 +1,26 @@
+#|问题：将一个数目为x的钱换成由几种币值的零钱有几种换法？
+        如将1美元换成由50，25，10，5，1美分（一美元为100美分）组合而成，有
+    有多少种方法？|#
+
+#|将问题分为两个部分：
+    将面值为a的钱用n种硬币表示的方法有
+    1.将面值为a的钱用除第一种硬币之外的n-1种硬币来表示的方法数
+    +
+    2.将面值为a-（第一种货币的币值）的钱用n种硬币来表示的方法数
+    种|#
+#|最后的最小情况：
+    1.如果面值a=0，则算作有1种方法
+    2.如果面值a<0，则算作有0种方法
+    3.如果硬币数目n=0，则算作有0种方法|#
+#lang racket
+(define (cc amount kinds-of-coins)
+    (cond ((= amount 0)) 1)
+        ((or (< amount 0) (= kinds-of-coins 0)) 0)
+        (else (+ (cc amount (- kinds-of-coins 1))
+                 (cc (- amount (first-kind kinds-of-coins)) kinds-of-coins))))
+(define (first-kind kinds-of-coins)
+    (cond ((= kinds-of-coins 1) 1)
+        ((= kinds-of-coins 2) 5)
+        ((= kinds-of-coins 3) 10)
+        ((= kinds-of-coins 4) 25)
+        ((= kinds-of-coins 5) 50))) 

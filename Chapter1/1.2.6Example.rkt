@@ -1,0 +1,36 @@
+#lang racket
+#|测试素数的方法：
+    1.为了测试x是否为素数，将1到根号x的数以此作为除数，如果x可以被整除，如果
+    测试数的平方大于x，则令最大除数为x，此时确定x为素数
+    |#
+(define (smallest-divisor n)
+    (find-divisor n 2))
+(define (find-divisor n test-divisor)
+    (cond ((> (square test-divisor) n) n)
+        ((divide? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+(define (divide? a b)
+    (= (remainder b a) 0))
+(define (prime? n)
+    (= (smallest-divisor n) n))
+
+#|   2.费马法：若一个数x为素数，则所有小于x的正整数n都满足：n的x次方对于x的余
+     数等于n对x的余数，利用这个关系来测试是否是素数|#
+(define (square x)
+    (* x x))
+(define (expmod base exp m )
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))    
+(define (fermat-test n)
+    (define (try-it a)
+        (= (expmod a n n) a))
+    (try-it(+ 1 (random (- n 1)))))
+(define (fast-prime? n times)
+    (cond ((= times 0) true)
+        ((fermat-test n) (fast-prime? n (- times 1)))
+        (else false)))

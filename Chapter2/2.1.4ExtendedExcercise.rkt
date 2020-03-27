@@ -1,0 +1,26 @@
+#lang racket
+(define (make-interval x y)
+    (cons x y))
+
+(define (upperbound x)
+    (max (car x) (cdr x)))
+
+(define (lowerbound x)
+    (min (car x) (cdr x)))
+
+(define (add-interval x y)
+    (make-interval (+ (lowerbound x) (lowerbound y))
+                    (+ (upperbound x) (upperbound y))))
+
+(define (mul-interval x y)
+ (let ((p1 (* (upperbound x) (upperbound y)))
+        (p2 (* (upperbound x) (lowerbound y)))
+        (p3 (* (lowerbound x) (upperbound y)))
+        (p4 (* (lowerbound x) (lowerbound y))))
+     (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4))))
+
+(define (div-interval x y)
+    (mul-interval x
+            (make-interval (/ 1.0 upperbound) (/ 1.0 lowerbound))))
+
+        
